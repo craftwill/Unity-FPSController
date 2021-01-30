@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using Bytes.Mouse;
-
 namespace Bytes.Controllers
 {
     /// <summary>
@@ -56,14 +54,7 @@ namespace Bytes.Controllers
         /// </summary>
         protected virtual void _Controls_Update()
         {
-            // Recentrer la souris lors d'un clic
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (overrideMouse)
-                {
-                    MouseManager.SetMouse(MouseManager.MouseState.LOCKED);
-                }
-            }
+            if (Input.GetKeyDown(KeyCode.Mouse0)) { Cursor.visible = false; Cursor.lockState = CursorLockMode.Locked; }
 
             // Animation course
             if (Input.GetKey(KeyCode.LeftShift) && !_Running)
@@ -75,7 +66,7 @@ namespace Bytes.Controllers
         /// <summary>
         /// Fonction qui s'occupe du mouvement du joueur en entier, appelée dans Update à chaque frame
         /// </summary>
-        protected virtual void _Movement_Update()
+        protected virtual float _Movement_Update()
         {
             float horiz = Input.GetAxisRaw("Horizontal");
             float vert = Input.GetAxisRaw("Vertical");
@@ -91,6 +82,10 @@ namespace Bytes.Controllers
 
             // GetComponent<Rigidbody>().velocity = (mouvementAvant + mouvementDeCoter);//Le dernier vecteur ajoute de la force vers le sol et empêche ainsi le joueur de flotter
             GetComponent<Rigidbody>().velocity = (mouvementAvant + mouvementDeCoter + new Vector3(0, -3, 0));
+
+            if (horiz == 0 && vert == 0) { return 0; }
+
+            return vitesse;
         }
 
         /// <summary>
